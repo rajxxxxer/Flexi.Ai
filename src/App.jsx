@@ -1,0 +1,36 @@
+import { Route, Routes } from "react-router-dom";
+import Home from "./pagess/Home";
+import Layoutt from "./pagess/Layoutt";
+import { Dashboard } from "./pagess/Dashboard";
+import { Writear } from "./pagess/Writear";
+import Blogtitle from "./pagess/Blogtitle";
+import GenrateIm from "./pagess/GenrateIm";
+import Review from "./pagess/Review";
+import Community from "./pagess/Community";
+import Navbar from "./compon/Navbar";
+
+function App() {
+  return (
+    <div>
+      <Routes>
+        {/* Standalone Navbar route */}
+        
+
+        {/* Main /ai layout with nested children */}
+        <Route path="/ai" element={<Layoutt />}>
+          <Route index element={<Dashboard />} />
+          <Route path="w-a" element={<Writear />} />
+          <Route path="bt" element={<Blogtitle />} />
+          <Route path="gen" element={<GenrateIm />} />
+          <Route path="rev" element={<Review />} />
+          <Route path="com" element={<Community />} />
+        </Route>
+
+        {/* Home route */}
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </div>
+  );
+}
+
+export default App;
