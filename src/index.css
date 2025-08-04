@@ -4,10 +4,51 @@
 
 
 
-*{
-  font-family: "Outfit",sans-serif;
-
-  
-
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
+.marquee-row {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin: auto;
+  max-width: 1280px; /* same as max-w-5xl */
+}
+
+.marquee-inner {
+  display: flex;
+  padding-top: 2.5rem; /* pt-10 */
+  padding-bottom: 1.25rem; /* pb-5 */
+  min-width: 200%;
+  animation: marqueeScroll 25s linear infinite;
+}
+
+.marquee-reverse {
+  animation-direction: reverse;
+}
+
+.marquee-gradient-left,
+.marquee-gradient-right {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 5rem; /* w-20 */
+  z-index: 10;
+  pointer-events: none;
+}
+
+.marquee-gradient-left {
+  left: 0;
+  background: linear-gradient(to right, white, transparent);
+}
+
+.marquee-gradient-right {
+  right: 0;
+  background: linear-gradient(to left, white, transparent);
+}

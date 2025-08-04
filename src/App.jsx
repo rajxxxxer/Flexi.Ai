@@ -8,13 +8,16 @@ import GenrateIm from "./pagess/GenrateIm";
 import Review from "./pagess/Review";
 import Community from "./pagess/Community";
 import Navbar from "./compon/Navbar";
+import './index.css';
+import Removeobj from "./pagess/Removeobj";
+import RemoveBackground from "./pagess/RemoveBackground";
 
 function App() {
   return (
     <div>
       <Routes>
         {/* Standalone Navbar route */}
-        
+      
 
         {/* Main /ai layout with nested children */}
         <Route path="/ai" element={<Layoutt />}>
@@ -24,6 +27,8 @@ function App() {
           <Route path="gen" element={<GenrateIm />} />
           <Route path="rev" element={<Review />} />
           <Route path="com" element={<Community />} />
+          <Route path='ro' element={<Removeobj></Removeobj>} />
+          <Route path='remback' element={<RemoveBackground></RemoveBackground>} />
         </Route>
 
         {/* Home route */}
