@@ -12,7 +12,7 @@ const Sidebar = ({ sidebar, setSidebar }) => {
 
   const navItems = [
     { to: '/ai', label: 'Dashboard', Icon: House },
-    { to: '/ai/w-a', label: 'Writer', Icon: SquarePen },
+    { to: '/ai/w-a', label: 'Article-Generator', Icon: SquarePen },
     { to: '/ai/bt', label: 'Blog Title', Icon: Hash },
     { to: '/ai/gen', label: 'Generate Image', Icon: Image },
     { to: '/ai/rev', label: 'Review', Icon: FileText },
@@ -25,12 +25,12 @@ const Sidebar = ({ sidebar, setSidebar }) => {
 
   return (
     <div
-      className={`w-64 bg-white shadow-lg border-r border-gray-200 flex flex-col justify-between max-sm:absolute top-14 bottom-0 z-50 ${
+      className={`w-64 bg-gray-100 shadow-lg border-r border-gray-200 flex flex-col justify-between max-sm:absolute top-14 bottom-0 z-50 ${
         sidebar ? 'translate-x-0' : 'max-sm:-translate-x-full'
       } transition-all duration-300 ease-in-out`}
     >
       {/* Top Section */}
-      <div className="my-8 w-full px-4">
+      <div className="my-8 mb-0 w-full px-4">
         <div className="flex flex-col items-center">
           <img
             src={user.imageUrl}
@@ -70,32 +70,33 @@ const Sidebar = ({ sidebar, setSidebar }) => {
             </NavLink>
           ))}
         </div>
-      
       </div>
-        <div className=" border-gray-200 px-7 p-3  justify-between">
-       <div
-            onClick={openUserProfile}
-            className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 "
-          >
-            <img
-              src={user.imageUrl}
-              alt={user.fullName || 'User Avatar'}
-              className="w-8 h-8 rounded-full object-cover"
-            />
-            <div >
-              <h1 className="text-sm font-semibold text-gray-800">
-                {user.fullName || 'User'}
-              </h1>
-              <p className="text-xs text-gray-500">
-                <Protect plan="premium" fallback="free">Premium</Protect> Plan
-              </p>
-            </div>
-          </div>
-          <LogOut
-            onClick={signOut}
-            className="w-5  text-gray-400 hover:text-gray-700 transition cursor-pointer"
-          />
-      </div>
+
+  {/* Bottom Section */}
+<div className="w-full border-t border-r mt-4 border-black-200 px-7 p-3 flex items-center justify-between">
+  <div
+    onClick={openUserProfile}
+    className="flex items-center gap-2 cursor-pointer hover:bg-blue-50 rounded-md transition"
+  >
+    <img
+      src={user.imageUrl}
+      alt={user.fullName || 'User Avatar'}
+      className="w-8 h-8 rounded-full object-cover"
+    />
+    <div>
+      <h1 className="text-sm font-semibold text-gray-800">
+        {user.fullName || 'User'}
+      </h1>
+      <p className="text-xs text-gray-500">
+        <Protect plan="premium" fallback="free">Premium</Protect> Plan
+      </p>
+    </div>
+  </div>
+  <LogOut
+    onClick={signOut}
+    className="w-5 text-gray-400 hover:text-gray-700 transition cursor-pointer"
+  />
+</div>
 
     </div>
   );

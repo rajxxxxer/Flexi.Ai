@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { Button } from "@/components/ui/button";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
+import ShinyButton from "./ShinyButton";
 
 const Navbar = () => {
   const nav = useNavigate();
@@ -21,13 +22,10 @@ const Navbar = () => {
       />
 
       {/* Get Started Button (Right) */}
-      {user?<UserButton></UserButton>: <Button
-        onClick={openSignIn}
-        className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 py-2 shadow-md transition-colors duration-200"
-      >
-        Get Started
-      </Button>}
-     
+      {user?<UserButton></UserButton>: 
+      <ShinyButton val="Get Started" onclick={openSignIn}></ShinyButton>
+      }
+
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { assets } from '@/assets/assets'
+import Footer from '@/compon/Footer'
 import Sidebar from '@/compon/Sidebar'
 import { Menu, X } from 'lucide-react'
 import React, { useState } from 'react'
@@ -17,7 +18,7 @@ sidebar ?<X onClick={()=>{setSidebar(false)}} className='w-6 h-6 text-gray-600 s
      </nav>
      <div className='flex-1 w-full flex h-[calc(100vh-64px)]'>
       <Sidebar sidebar={sidebar} setSidebar={setSidebar} />
-      <div className='flex-1 w-full bg-[#F4F7FB]'><Outlet></Outlet></div>
+      <div className='flex-1 w-full bg-[#F4F7FB]'><Outlet className="w-full h-screen" /></div>
      </div>
 
  

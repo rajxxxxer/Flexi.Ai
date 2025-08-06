@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pagess/Home";
 import Layoutt from "./pagess/Layoutt";
 import { Dashboard } from "./pagess/Dashboard";
-import { Writear } from "./pagess/Writear";
+import { Articles } from "./pagess/Articles";
 import Blogtitle from "./pagess/Blogtitle";
 import GenrateIm from "./pagess/GenrateIm";
 import Review from "./pagess/Review";
@@ -22,7 +22,7 @@ function App() {
         {/* Main /ai layout with nested children */}
         <Route path="/ai" element={<Layoutt />}>
           <Route index element={<Dashboard />} />
-          <Route path="w-a" element={<Writear />} />
+          <Route path="w-a" element={<Articles />} />
           <Route path="bt" element={<Blogtitle />} />
           <Route path="gen" element={<GenrateIm />} />
           <Route path="rev" element={<Review />} />

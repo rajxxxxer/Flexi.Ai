@@ -28,10 +28,24 @@
   min-width: 200%;
   animation: marqueeScroll 25s linear infinite;
 }
+.reset-tw,.reset-tw *{
+  all: revert !important;
+}
 
 .marquee-reverse {
   animation-direction: reverse;
 }
+.cl-drawerRoot {
+  z-index: 9999 !important;
+  position: fixed !important;
+}
+
+body,
+#__next,
+main {
+  overflow: visible !important;
+}
+
 
 .marquee-gradient-left,
 .marquee-gradient-right {
@@ -51,4 +65,23 @@
 .marquee-gradient-right {
   right: 0;
   background: linear-gradient(to left, white, transparent);
+}
+/* styles/globals.css */
+
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.button-bg {
+  background: conic-gradient(from 0deg, #00F5FF, #000, #000, #00F5FF, #000, #000, #000, #00F5FF);
+  background-size: 300% 300%;
+  animation: shine 6s ease-out infinite;
 }
