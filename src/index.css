@@ -79,6 +79,31 @@ main {
     background-position: 0% 50%;
   }
 }
+.sticker {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff7eb3, #ff758c);
+  color: white;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 8px 0 8px 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+/* Small folded-corner effect */
+.sticker::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-width: 0 0 8px 8px;
+  border-style: solid;
+  border-color: transparent transparent rgba(0,0,0,0.15) transparent;
+}
+
 
 .button-bg {
   background: conic-gradient(from 0deg, #00F5FF, #000, #000, #00F5FF, #000, #000, #000, #00F5FF);
