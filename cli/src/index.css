@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+
+
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-row {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin: auto;
+  max-width: 1280px; /* same as max-w-5xl */
+}
+
+.marquee-inner {
+  display: flex;
+  padding-top: 2.5rem; /* pt-10 */
+  padding-bottom: 1.25rem; /* pb-5 */
+  min-width: 200%;
+  animation: marqueeScroll 25s linear infinite;
+}
+.reset-tw,.reset-tw *{
+  all: revert !important;
+}
+
+.marquee-reverse {
+  animation-direction: reverse;
+}
+.cl-drawerRoot {
+  z-index: 9999 !important;
+  position: fixed !important;
+}
+
+body,
+#__next,
+main {
+  overflow: visible !important;
+}
+
+
+.marquee-gradient-left,
+.marquee-gradient-right {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 5rem; /* w-20 */
+  z-index: 10;
+  pointer-events: none;
+}
+
+.marquee-gradient-left {
+  left: 0;
+  background: linear-gradient(to right, white, transparent);
+}
+
+.marquee-gradient-right {
+  right: 0;
+  background: linear-gradient(to left, white, transparent);
+}
+/* styles/globals.css */
+
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.sticker {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff7eb3, #ff758c);
+  color: white;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 8px 0 8px 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+/* Small folded-corner effect */
+.sticker::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-width: 0 0 8px 8px;
+  border-style: solid;
+  border-color: transparent transparent rgba(0,0,0,0.15) transparent;
+}
+
+
+.button-bg {
+  background: conic-gradient(from 0deg, #00F5FF, #000, #000, #00F5FF, #000, #000, #000, #00F5FF);
+  background-size: 300% 300%;
+  animation: shine 6s ease-out infinite;
+}
