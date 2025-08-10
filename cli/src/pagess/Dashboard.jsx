@@ -16,6 +16,10 @@ export const Dashboard = () => {
   };
 
   useEffect(() => {
+    if (!user) {
+      nav('/sign-in');
+      return;
+    }
     
     getDashboardData();
   }, []);

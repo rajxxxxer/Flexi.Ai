@@ -1,13 +1,17 @@
 import { assets } from '@/assets/assets'
 import Footer from '@/compon/Footer'
 import Sidebar from '@/compon/Sidebar'
+import { useClerk, useUser } from '@clerk/clerk-react'
 import { Menu, X } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
 const Layoutt = () => {
   const nav=useNavigate();
   const [sidebar, setSidebar] = useState(false)
+  const{user}=useUser();
+  const{openSignIn}=useClerk()
+
   return (
     <div className='flex flex-col items-start justify-start h-screen'>
      <nav className='w-full  flex items-center justify-between px-8 border-b border-gray-200'>

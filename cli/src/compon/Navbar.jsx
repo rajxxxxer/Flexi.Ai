@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
-import { Button } from "@/components/ui/button";
+
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
 import ShinyButton from "./ShinyButton";
 
