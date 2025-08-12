@@ -7,12 +7,21 @@ import Blogtitle from "./pagess/Blogtitle";
 import GenrateIm from "./pagess/GenrateIm";
 import Review from "./pagess/Review";
 import Community from "./pagess/Community";
-import Navbar from "./compon/Navbar";
+
 import './index.css';
 import Removeobj from "./pagess/Removeobj";
 import RemoveBackground from "./pagess/RemoveBackground";
+import { useEffect } from "react";
+import { useAuth } from "@clerk/clerk-react";
 
 function App() {
+const {getToken}=useAuth();
+useEffect(() => {
+  getToken().then((token) => {
+    console.log("Token:", token);
+  });
+}, []);
+
   return (
     <div>
       <Routes>

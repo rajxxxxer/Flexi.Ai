@@ -1,20 +1,28 @@
-import express from 'express'
-import cors from 'cors'
-import 'dotenv/config'
-import { clerkMiddleware, requireAuth } from '@clerk/express'
+// server.js
+import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
+import { clerkMiddleware, requireAuth } from '@clerk/express';
+import airouter from './routes/airoute.js';
+import { auth } from './middlewares/auth.js';
+import connectCloudinary from './configs/cloudinary.js';
 
-const app = express()
-const PORT = 8000
 
-app.use(cors())
-app.use(clerkMiddleware())
-app.use(express.json())
+const app = express();
+await connectCloudinary();
+const PORT = 8000;
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-app.use(requireAuth())
+app.use(cors());
+app.use(clerkMiddleware());
+app.use(express.json());
+
+// Public route
+
+
+
+// Protected routes
+app.use('/api/ai', requireAuth(), auth, airouter);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
-})
+  console.log(`Server is running on port ${PORT}`);
+});

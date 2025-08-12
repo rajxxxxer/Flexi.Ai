@@ -1,5 +1,6 @@
 import { clerkClient } from "@clerk/express";
 
+
 export const auth = async (req, res, next) => {
   // Your authentication logic here
   try{
@@ -18,7 +19,9 @@ export const auth = async (req, res, next) => {
       req.free_usage=0;
     }
     req.plan=hasPremiumPlan?'premium':'free';
+    
     next();
+
   }
   catch(err){
     console.error("Authentication error:", err);
