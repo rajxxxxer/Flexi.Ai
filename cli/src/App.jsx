@@ -13,7 +13,7 @@ import Removeobj from "./pagess/Removeobj";
 import RemoveBackground from "./pagess/RemoveBackground";
 import { useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
-
+import { Toaster } from "react-hot-toast";
 function App() {
 const {getToken}=useAuth();
 useEffect(() => {
@@ -24,6 +24,7 @@ useEffect(() => {
 
   return (
     <div>
+      <Toaster />
       <Routes>
         {/* Standalone Navbar route */}
       

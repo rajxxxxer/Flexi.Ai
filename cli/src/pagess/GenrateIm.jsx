@@ -2,7 +2,10 @@ import { Image } from 'lucide-react';
 import React, { useState } from 'react';
 import ShinyButton from '@/compon/ShinyButton';
 import { Hash, Sparkles } from 'lucide-react';
-
+import { useAuth } from '@clerk/clerk-react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 const GenrateIm = () => {
   const Imagestyle = [
     'Realistc',
@@ -22,11 +25,31 @@ const GenrateIm = () => {
   const [selectedstyle, setSelectedstyle] = useState('Realistc');
   const [input, setInput] = useState('');
   const [published, setPublished] = useState(false);
-
+const [loading, setLoading] = useState(false);
+  const [content, setContent] = useState('');
+  const { getToken } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Input:', input);
-    console.log('Style:', selectedstyle);
+    try{
+setLoading(true);
+const prompt=`Generate an image of ${input} in the style ${selectedstyle}`
+const{data}=await axios.post('api/ai/generate-image',{prompt,published},{headers:{
+  Authorization:`Bearer ${await getToken()}`
+}}
+ 
+)
+if(data.success){
+  setContent(data.content)
+}
+else{
+  toast.error(error.message)
+}
+
+    }
+    catch(err){
+      console.error('Error generating image:', err);
+    }
+    setLoading(false);
   };
 
   return (
@@ -92,6 +115,7 @@ const GenrateIm = () => {
           <div className="w-full sm:w-auto flex items-center gap-2 justify-center sm:justify-start">
             <Image className="w-4 h-4 text-[#FF4938]" />
             <ShinyButton
+             dis={loading}
               val="Generate Image"
               cl="bg-gradient-to-r from-[#00AD25] to-[#04FF50]"
               onclick={handleSubmit}
@@ -107,12 +131,15 @@ const GenrateIm = () => {
           </div>
 
           <div className="flex-1 flex justify-center items-center text-xs text-gray-700 py-4">
-            <div className="flex flex-col items-center text-center gap-1.5 max-w-xs px-2">
+          {!content ?   <div className="flex flex-col items-center text-center gap-1.5 max-w-xs px-2">
               <Hash className="w-4 h-4 text-blue-600" />
               <p>
                 This is where the generated images will appear. You can edit, save, or share them.
               </p>
-            </div>
+            </div> :
+
+             <img className='mt-3 w-full h-full object-cover' src={content} alt="Generated Image" />
+             }
           </div>
         </div>
 

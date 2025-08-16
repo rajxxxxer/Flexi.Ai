@@ -1,7 +1,11 @@
 import ShinyButton from '@/compon/ShinyButton';
 import { Edit, Sparkles } from 'lucide-react';
 import React, { useState } from 'react';
-
+import axios from 'axios';
+import { useAuth } from '@clerk/clerk-react';
+import toast from 'react-hot-toast';
+import Markdown from 'react-markdown';
+axios.defaults.baseURL=import.meta.env.VITE_BASE_URL;
 export const Articles = () => {
   const articleLength = [
     { length: 800, text: 'Short (500–800 words)' },
@@ -11,12 +15,41 @@ export const Articles = () => {
 
   const [selectedLength, setSelectedLength] = useState(articleLength[0].length);
   const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [content, setContent] = useState('');
+  const { getToken } = useAuth();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Input:', input);
-    console.log('Length:', selectedLength);
-  };
+  try {
+    setLoading(true);
+
+    const prompt = `Write an article about ${input} in ${selectedLength.text}`;
+    
+    const { data } = await axios.post('api/ai/generate-article', {
+      length: selectedLength.length,
+      prompt,
+      location: "India" // ✅ Hardcoded here
+    }, {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`
+      }
+    });
+
+    if (data.success) {
+      setContent(data.content);
+    } else {
+      toast.error(data.message || 'Failed to generate article');
+    }
+
+    setLoading(false);
+  } catch (err) {
+    toast.error('Error generating article');
+    console.error('Error generating article:', err);
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="flex flex-col md:flex-row gap-6 p-4">
@@ -56,7 +89,7 @@ export const Articles = () => {
         </div>
 
          <div className="w-full sm:w-auto mt-4 flex justify-center sm:justify-start">
-  <ShinyButton val="Generate-Article" onclick={handleSubmit} />
+  <ShinyButton dis={loading} val="Generate-Article" onclick={handleSubmit} />
 </div>
       </form>
 
@@ -66,13 +99,18 @@ export const Articles = () => {
           <Edit className="w-5 h-5 text-blue-600" />
           <h1 className="text-lg font-semibold text-gray-800">Generated Article</h1>
         </div>
-
-        <div className="flex-1 text-sm text-gray-700">
+         {!content?( <div className="flex-1 text-sm text-gray-700">
           <p>
             This is where the generated article will appear. You can edit it, save it, or share it.
+          </p></div>)
+        :(<div className='mt-3 h-full overflow-y-scroll text-sm text-slate-600'>
+          <p className='reset-tw'>
+            <Markdown>{content}</Markdown>
           </p>
-        </div>
+        </div>)}
+
       </div>
+
     </div>
   );
 };

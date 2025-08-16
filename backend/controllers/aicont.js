@@ -14,37 +14,38 @@ const Ai = new OpenAI({
 
 export const generateArticle = async (req, res) => {
   try {
-    
     const { userId } = req.auth();
-    const { prompt,length } = req.body;
+    const { prompt, length, location } = req.body; // ✅ include location
     const plan = req.plan;
     const free_usage = req.free_usage;
 
-    if (plan !== "premium" && free_usage >= 10) {
+    if (plan !== "premium" && free_usage >= 20) {
       return res.status(403).json({ error: "Free tier limit reached" });
     }
+
+    // ✅ Modify the prompt to include location if provided
+    const finalPrompt = location
+      ? `${prompt} in ${location}`
+      : prompt;
 
     const response = await Ai.chat.completions.create({
       model: "gemini-2.0-flash",
       messages: [
-        { role: "user", content: prompt }
+        { role: "user", content: finalPrompt }
       ],
       temperature: 0.7,
       max_tokens: length
-
     });
 
     const choice = response.choices?.[0] || {};
-const content =
-  choice.message?.content ||
-  choice.content?.[0]?.text ||
-  "";
-
-
+    const content =
+      choice.message?.content ||
+      choice.content?.[0]?.text ||
+      "";
 
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
-      VALUES (${userId}, ${prompt}, ${content}, 'article')
+      VALUES (${userId}, ${finalPrompt}, ${content}, 'article')
     `;
 
     if (plan !== "premium") {
@@ -62,6 +63,7 @@ const content =
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 export const generateBlogTitle = async (req, res) => {
   try {
     
@@ -70,7 +72,7 @@ export const generateBlogTitle = async (req, res) => {
     const plan = req.plan;
     const free_usage = req.free_usage;
 
-    if (plan !== "premium" && free_usage >= 10) {
+    if (plan !== "premium" && free_usage >= 20) {
       return res.status(403).json({ error: "this feature is not available on the free plan" });
     }
 
@@ -117,7 +119,7 @@ export const generateImage = async (req, res) => {
     const { userId, plan } = req;
     const { prompt, publish } = req.body;
 
-    if (plan !== "premium" && req.free_usage >= 10) {
+    if (plan !== "premium" && req.free_usage >= 20) {
       return res.status(403).json({ error: "Free tier limit reached" });
     }
 
@@ -151,9 +153,9 @@ export const generateImage = async (req, res) => {
 export const removeImageBackground = async (req, res) => {
   try {
     const { userId } = req.auth();
-    const { image } = req.file;
+    const image = req.file;
     const plan = req.plan;
-    if (plan !== "premium" && req.free_usage >= 10) {
+    if (plan !== "premium" && req.free_usage >= 20) {
       return res.status(403).json({ error: "Free tier limit reached" });
     }
 
@@ -190,11 +192,11 @@ export const removeImageObject = async (req, res) => {
   try {
   
     const { userId } = req.auth();
-    const { image } = req.file;
+    const  image  = req.file;
     const plan = req.plan;
     const {object}=req.body;
 
-    if (plan !== "premium" && req.free_usage >= 10) {
+    if (plan !== "premium" && req.free_usage >= 20) {
       return res.status(403).json({ error: "Free tier limit reached" });
     }
 
@@ -233,7 +235,7 @@ export const resumeReview = async (req, res) => {
     const plan = req.plan;
    
 
-    if (plan !== "premium" && req.free_usage >= 10) {
+    if (plan !== "premium" && req.free_usage >= 20) {
       return res.status(403).json({ error: "Free tier limit reached" });
     }
     if (resume.size > 5 * 1024 * 1024) {

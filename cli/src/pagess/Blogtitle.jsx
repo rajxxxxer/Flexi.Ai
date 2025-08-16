@@ -1,19 +1,48 @@
 import ShinyButton from '@/compon/ShinyButton';
-import { Edit, Hash, Sparkles } from 'lucide-react';
+import { useAuth } from '@clerk/clerk-react';
+import axios from 'axios';
+import {  Hash, Sparkles } from 'lucide-react';
 import React, { useState } from 'react';
-
+import toast from 'react-hot-toast';
+import Markdown from 'react-markdown';
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 const Blogtitle = () => {
   const blogs = ['General', 'Technology', 'Health', 'Lifestyle', 'Travel', 'Education', 'Food'];
 
   const [selectedblog, setSelectedblog] = useState(blogs[0]);
   const [input, setInput] = useState('');
-
+const [loading, setLoading] = useState(false);
+  const [content, setContent] = useState('');
+  const { getToken } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Input:', input);
-    console.log('Blog:', selectedblog);
-  };
+  try{
+ setLoading(true);
 
+    const prompt = `Generate a blog title about ${input} in ${selectedblog} category`;
+
+    const { data } = await axios.post('api/ai/generate-blog', {
+      prompt
+      //location: "India" // ✅ Hardcoded here
+    }, {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`
+      }
+    });
+
+    if (data.success) {
+      setContent(data.content);
+    } else {
+      
+      toast.error(data.message || 'Failed to generate article');
+    }
+
+    setLoading(false);
+  }
+  catch(err){
+    console.error('Error generating blog title:', err);
+  }
+  };
   return (
     <div className="flex flex-col md:flex-row gap-6 p-4 bg-gray-50">
       {/* Left: Form */}
@@ -54,7 +83,7 @@ const Blogtitle = () => {
         </div>
 
    <div className="w-full sm:w-auto mt-4 flex justify-center sm:justify-start  ">
-  <ShinyButton val="Generate-Title" cl="bg-gradient-to-r from-[#C341F6] to-[#8E37EB]" onclick={handleSubmit} />
+  <ShinyButton dis={loading} val="Generate-Title" cl="bg-gradient-to-r from-[#C341F6] to-[#8E37EB]" onclick={handleSubmit} />
 </div>
 
 
@@ -68,12 +97,14 @@ const Blogtitle = () => {
         </div>
 
         <div className="flex-1 flex justify-center items-center text-sm text-gray-700">
-          <div className='flex flex-col items-center text-center gap-4 max-w-md px-4'>
+        {!content ?  <div className='flex flex-col items-center text-center gap-4 max-w-md px-4'>
             <Hash className="w-6 h-6 text-blue-600" />
             <p>
               This is where the generated titles will appear. You can edit them, save them, or share them.
             </p>
-          </div>
+          </div> : <p className='reset-tw'>
+            <Markdown>{content}</Markdown>
+          </p> }
         </div>
       </div>
     </div>
