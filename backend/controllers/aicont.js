@@ -176,7 +176,7 @@ const { secure_url } = await cloudinary.uploader.upload(image.path,{
 
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
-      VALUES (${userId},'Remove background from image', ${secure_url}, 'image')
+      VALUES (${userId},'Remove background from image', ${secure_url}, 'bg-image')
     `;
 
  

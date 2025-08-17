@@ -18,9 +18,12 @@ export const getPublishCreation= async (req, res) => {
   try {
 
     
-
-    const creations = await sql`
-      SELECT * FROM creations WHERE publish =true ORDER BY created_at DESC`;
+const creations = await sql`
+  SELECT * 
+  FROM creations
+  WHERE type = 'image'
+  ORDER BY created_at DESC
+`;
 
     return res.json({ success: true, creations });
   } catch (err) {
@@ -33,39 +36,47 @@ export const togglelike = async (req, res) => {
     const { userId } = req.auth();
     const { id } = req.body;
 
-    // Get creation
+    if (!id) {
+      return res.status(400).json({ success: false, message: "Creation ID is required" });
+    }
+
+    // Get the creation by ID
     const [creation] = await sql`
       SELECT * FROM creations WHERE id = ${id}
     `;
 
     if (!creation) {
-      return res.status(404).json({ error: "Creation not found" });
+      return res.status(404).json({ success: false, message: "Creation not found" });
     }
 
-    const currentLikes = creation.likes || []; // likes is text[]
+    const currentLikes = creation.likes || [];
     const userIdString = userId.toString();
 
-    let updatedLikes;
     let message;
 
+    // Check if user already liked
     if (currentLikes.includes(userIdString)) {
-      updatedLikes = currentLikes.filter(user => user !== userIdString);
+      // Remove user ID from likes
+      await sql`
+        UPDATE creations
+        SET likes = array_remove(likes, ${userIdString})
+        WHERE id = ${id}
+      `;
       message = "Creation unliked";
     } else {
-      updatedLikes = [...currentLikes, userIdString];
+      // Add user ID to likes
+      await sql`
+        UPDATE creations
+        SET likes = array_append(likes, ${userIdString})
+        WHERE id = ${id}
+      `;
       message = "Creation liked";
     }
-
-    // Directly pass array to PostgreSQL
-    await sql`
-      UPDATE creations
-      SET likes = ${sql.array(updatedLikes, 'text')}
-      WHERE id = ${id}
-    `;
 
     return res.json({ success: true, message });
   } catch (err) {
     console.error("Error toggling like:", err);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+

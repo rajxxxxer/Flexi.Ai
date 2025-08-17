@@ -13,6 +13,7 @@ const Community = () => {
 const {getToken}=useAuth();
   const fetchCreations = async () => {
   try{
+    setLoading(true);
  const { data } = await axios.get('/api/user/published-creation',  {
       headers: {
         Authorization: `Bearer ${await getToken()}`
@@ -33,6 +34,35 @@ toast.error(error.message);
   }
    setLoading(false);
   };
+const imagelike = async (id) => {
+  try {
+    setLoading(true);
+
+    const { data } = await axios.post(
+      '/api/user/toggle-like',
+      { id },
+      {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`
+        }
+      }
+    );
+
+    if (data.success) {
+      toast.success(data.message);
+      // Refetch creations to reflect updated like state
+      await fetchCreations();
+    } else {
+      toast.error(data.message || 'Something went wrong');
+    }
+  } catch (error) {
+    toast.error(error.response?.data?.message || 'Failed to toggle like');
+    console.error('Toggle like error:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchCreations();
@@ -66,6 +96,7 @@ toast.error(error.message);
                 {/* Likes */}
                 <div className="flex items-center gap-1 bg-white/80 dark:bg-gray-900/80 px-2 py-1 rounded-full backdrop-blur-sm shrink-0">
                   <Heart
+                  onClick={()=>imagelike(creation.id)}
                     className={`w-5 h-5 cursor-pointer transition-colors ${
                       creation.likes.includes(user?.id)
                         ? 'fill-red-500 text-red-500'
