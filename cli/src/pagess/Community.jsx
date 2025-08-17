@@ -1,15 +1,37 @@
 import { dummyPublishedCreationData } from '@/assets/assets';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth, useUser } from '@clerk/clerk-react';
 import { Heart } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+axios.defaults.baseURL=import.meta.env.VITE_BASE_URL;
 
 const Community = () => {
   const [creations, setCreations] = useState([]);
   const { user } = useUser();
+  const[loading,setLoading]=useState(false);
+const {getToken}=useAuth();
+  const fetchCreations = async () => {
+  try{
+ const { data } = await axios.get('/api/user/published-creation',  {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`
+      }
+    });
 
-  const fetchCreations = () => {
-    if (!user) return;
-    setCreations(dummyPublishedCreationData);
+    if (data.success) {
+      setCreations(data.creations);
+    } else {
+      
+      toast.error(data.message || 'Failed to generate article');
+    }
+
+    setLoading(false);
+  }
+  catch(error){
+toast.error(error.message);
+  }
+   setLoading(false);
   };
 
   useEffect(() => {

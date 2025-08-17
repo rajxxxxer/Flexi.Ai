@@ -231,44 +231,42 @@ const imageurl =cloudinary.url(public_id, {
 export const resumeReview = async (req, res) => {
   try {
     const { userId } = req.auth();
-    const resume = req.file;
     const plan = req.plan;
-   
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "Resume file is required" });
+    }
+
+    const resume = req.file;
 
     if (plan !== "premium" && req.free_usage >= 20) {
       return res.status(403).json({ error: "Free tier limit reached" });
     }
+
     if (resume.size > 5 * 1024 * 1024) {
       return res.json({ success: false, message: "File size exceeds 5MB limit" });
     }
+
     const dataBuffer = fs.readFileSync(resume.path);
     const pdfData = await pdf(dataBuffer);
-    const prompt = `Review the following resume and provide constructive feedback on its strengths,weaknesses and areas for improvement,Resume Content:\n\n${pdfData.text}`;
 
- const response = await Ai.chat.completions.create({
+    const prompt = `Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement:\n\n${pdfData.text}`;
+
+    const response = await Ai.chat.completions.create({
       model: "gemini-2.0-flash",
-      messages: [
-        { role: "user", content: prompt }
-      ],
+      messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
-      max_tokens: length
-
+      max_tokens: 1000 // ✅ yaha 'length' ki jagah fix value rakho
     });
-    const content = response.choices?.[0].message.content;
 
-
-
-
-
-
+    const content = response.choices?.[0].message?.content;
 
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
-      VALUES (${userId},'Review the resume', ${content}, 'resume')
+      VALUES (${userId}, 'Review the resume', ${content}, 'resume')
     `;
 
     return res.json({ success: true, content });
-
   } catch (err) {
     console.error("Error generating article:", err.response?.data || err);
     return res.status(500).json({ error: "Internal Server Error" });

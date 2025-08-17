@@ -8,7 +8,8 @@ airouter.post('/generate-article', auth, generateArticle);
 
 airouter.post('/generate-blog', auth, generateBlogTitle);
 airouter.post('/generate-image', auth, generateImage);
-airouter.post('/resume', auth, resumeReview);
+airouter.post('/resume', auth, upload.single('resume'), resumeReview);
+
 airouter.post('/remove-bg', auth, upload.single('image'), removeImageBackground);
 airouter.post('/remove-obj', auth, upload.single('image'), removeImageObject);
 
