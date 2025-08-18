@@ -1,14 +1,16 @@
-import { Image } from 'lucide-react';
+import { Image, Hash, Sparkles } from 'lucide-react';
 import React, { useState } from 'react';
 import ShinyButton from '@/compon/ShinyButton';
-import { Hash, Sparkles } from 'lucide-react';
 import { useAuth } from '@clerk/clerk-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useSidebar } from '@/context/SidebarContext'; // <-- sidebar context import
+
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+
 const GenrateIm = () => {
   const Imagestyle = [
-    'Realistc',
+    'Realistic',
     'Ghibli style',
     'Anime style',
     'Cartoon style',
@@ -19,43 +21,50 @@ const GenrateIm = () => {
     'Cyberpunk style',
     'Sci-fi style',
     'Steampunk style',
-    'Abstract style'
+    'Abstract style',
   ];
 
-  const [selectedstyle, setSelectedstyle] = useState('Realistc');
+  const [selectedstyle, setSelectedstyle] = useState('Realistic');
   const [input, setInput] = useState('');
   const [published, setPublished] = useState(false);
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [content, setContent] = useState('');
   const { getToken } = useAuth();
+  const { sidebar } = useSidebar();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-setLoading(true);
-const prompt=`Generate an image of ${input} in the style ${selectedstyle}`
-const{data}=await axios.post('api/ai/generate-image',{prompt,published},{headers:{
-  Authorization:`Bearer ${await getToken()}`
-}}
- 
-)
-if(data.success){
-  setContent(data.content)
-}
-else{
-  toast.error(error.message)
-}
-
-    }
-    catch(err){
+    try {
+      setLoading(true);
+      const prompt = `Generate an image of ${input} in the style ${selectedstyle}`;
+      const { data } = await axios.post(
+        'api/ai/generate-image',
+        { prompt, published },
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        }
+      );
+      if (data.success) {
+        setContent(data.content);
+      } else {
+        toast.error(data.message || 'Failed to generate image');
+      }
+    } catch (err) {
       console.error('Error generating image:', err);
+      toast.error('Error generating image');
     }
     setLoading(false);
   };
 
   return (
-    <div className="bg-gray-50 p-3 flex justify-center">
+    <div
+      className={`bg-gray-50 p-3 flex justify-center transition-all duration-300 ${
+        !sidebar ? 'max-sm:pl-16' : 'max-sm:pl-0'
+      }`}
+    >
       <div className="flex flex-col md:flex-row gap-3 w-full max-w-3xl">
-
         {/* Left: Form */}
         <form
           onSubmit={handleSubmit}
@@ -66,9 +75,7 @@ else{
               <Sparkles className="w-4 h-4 text-[#00AD25]" />
               <h2 className="text-sm font-semibold text-gray-800">AI Image Generator</h2>
             </div>
-            <p className="text-xs text-gray-500 font-light">
-              Describe your image to generate variations.
-            </p>
+            <p className="text-xs text-gray-500 font-light">Describe your image to generate variations.</p>
 
             <textarea
               rows={5}
@@ -86,10 +93,11 @@ else{
                   <span
                     key={option}
                     onClick={() => setSelectedstyle(option)}
-                    className={`cursor-pointer text-xs px-2.5 py-1 rounded-full border transition 
-                      ${selectedstyle === option
+                    className={`cursor-pointer text-xs px-2.5 py-1 rounded-full border transition ${
+                      selectedstyle === option
                         ? 'bg-green-400 text-white border-green-500'
-                        : 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200'}`}
+                        : 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200'
+                    }`}
                   >
                     {option}
                   </span>
@@ -97,7 +105,7 @@ else{
               </div>
 
               <div className="my-3 flex items-center gap-2">
-                <label className="relative text-xs text-gray-700">
+                <label className="relative text-xs text-gray-700 cursor-pointer">
                   <input
                     type="checkbox"
                     onChange={(e) => setPublished(e.target.checked)}
@@ -107,7 +115,7 @@ else{
                   <div className="w-8 h-4 bg-slate-300 rounded-full peer-checked:bg-green-500 transition"></div>
                   <span className="absolute left-1 top-0.5 w-3 h-3 bg-white rounded-full transition peer-checked:translate-x-4"></span>
                 </label>
-                <span className="text-xs text-gray-600">Publish after generation</span>
+                <span className="text-xs text-gray-600 select-none">Publish after generation</span>
               </div>
             </div>
           </div>
@@ -115,7 +123,7 @@ else{
           <div className="w-full sm:w-auto flex items-center gap-2 justify-center sm:justify-start">
             <Image className="w-4 h-4 text-[#FF4938]" />
             <ShinyButton
-             dis={loading}
+              dis={loading}
               val="Generate Image"
               cl="bg-gradient-to-r from-[#00AD25] to-[#04FF50]"
               onclick={handleSubmit}
@@ -131,18 +139,16 @@ else{
           </div>
 
           <div className="flex-1 flex justify-center items-center text-xs text-gray-700 py-4">
-          {!content ?   <div className="flex flex-col items-center text-center gap-1.5 max-w-xs px-2">
-              <Hash className="w-4 h-4 text-blue-600" />
-              <p>
-                This is where the generated images will appear. You can edit, save, or share them.
-              </p>
-            </div> :
-
-             <img className='mt-3 w-full h-full object-cover' src={content} alt="Generated Image" />
-             }
+            {!content ? (
+              <div className="flex flex-col items-center text-center gap-1.5 max-w-xs px-2">
+                <Hash className="w-4 h-4 text-blue-600" />
+                <p>This is where the generated images will appear. You can edit, save, or share them.</p>
+              </div>
+            ) : (
+              <img className="mt-3 w-full h-full object-cover rounded" src={content} alt="Generated" />
+            )}
           </div>
         </div>
-
       </div>
     </div>
   );

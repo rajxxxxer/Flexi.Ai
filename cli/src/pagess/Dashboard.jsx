@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Gem, Sparkles } from 'lucide-react';
-import { dummyCreationData } from '@/assets/assets'; // or '@/lib/dummyData' based on your project
+import { dummyCreationData } from '@/assets/assets';
 import { Protect, useUser } from '@clerk/clerk-react';
 import CreationItem from '@/compon/CreationItem';
 import { useNavigate } from 'react-router-dom';
+import { useSidebar } from '@/context/SidebarContext'; // ✅ Context import
 
 export const Dashboard = () => {
   const { user } = useUser();
   const nav = useNavigate();
+  const { sidebar } = useSidebar(); // ✅ Get sidebar state
 
   const [creations, setCreations] = useState([]);
 
@@ -24,11 +26,17 @@ export const Dashboard = () => {
   }, []);
 
   return (
-    <div className="h-full overflow-y-auto p-4 sm:p-6 bg-gray-50">
+    <div
+      className={`
+        h-full overflow-y-auto p-4 sm:p-6 bg-gray-50 transition-all duration-300
+        ${!sidebar ? 'max-sm:pl-16' : 'max-sm:pl-0'}
+      `}
+    >
       <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6">
         Dashboard Overview
       </h1>
 
+      {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         {/* Active Plan Card */}
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 flex items-center justify-between hover:shadow-lg transition-shadow duration-300">
@@ -55,6 +63,7 @@ export const Dashboard = () => {
         </div>
       </div>
 
+      {/* Creation List */}
       <div className="space-y-3 mt-6">
         <div className="flex flex-col gap-3">
           {creations.map((item) => (
