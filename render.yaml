@@ -1,25 +1,26 @@
 services:
   - type: web
     name: flexi-backend
-    env: node
+    runtime: node
     plan: free
-    rootDirectory: backend
+    branch: main              # Adjust if your branch differs
+    rootDir: backend          # Correct field name
     buildCommand: npm install
     startCommand: npm start
     envVars:
       - key: DATABASE_URL
-        value: postgresql://neondb_owner:npg_4uvXRSWCQFx2@ep-dawn-glitter-a8i2aarq-pooler.eastus2.azure.neon.tech/neondb?sslmode=require&channel_binding=require
+        value: "postgresql://neondb_owner:...your connection string..."
       - key: CLERK_PUBLISHABLE_KEY
-        value: pk_test_c21vb3RoLWdlbGRpbmctODMuY2xlcmsuYWNjb3VudHMuZGV2JA
+        value: "pk_test_..."
       - key: CLERK_SECRET_KEY
-        value: sk_test_6q5yJIwe4jLptsOWKozBqs7xtsVHPNNqp7rr4z4PDH
+        value: "sk_test_..."
       - key: GEMINI_API_KEY
-        value: AIzaSyDZZietw1T4ZzRT14fdugwJuWof_sGXbs0
+        value: "AIzaSy..."
       - key: CLIP_DROP_API_KEY
-        value: 3f83fae18760f911b49c57726c731a7bf58d0287770d9b472ea495a0a3729fd864b54ea6c39aa3bdb6a588b8b29e82f5
+        value: "3f83fa..."
       - key: CLOUDINARY_CLOUD_NAME
-        value: dlnaifnwy
+        value: "dlnaifnwy"
       - key: CLOUDINARY_API_KEY
-        value: 829181816355184
+        value: "829181816355184"
       - key: CLOUDINARY_API_SECRET
-        value: hvn8Khf5AZHVtM1Z92Y_mmqY5MY
+        value: "hvn8Khf5AZHVtM1Z92Y_mmqY5MY"
