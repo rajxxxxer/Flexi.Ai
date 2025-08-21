@@ -5,6 +5,7 @@ import CreationItem from '@/compon/CreationItem';
 import { useNavigate } from 'react-router-dom';
 import { useSidebar } from '@/context/SidebarContext';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -16,9 +17,20 @@ export const Dashboard = () => {
   const { getToken } = useAuth();
   const [creations, setCreations] = useState([]);
 
+  // ✅ function to fetch data
   const getDashboardData = async () => {
     try {
-      setLoading(true);
+     
+
+      // pehle cache check karo
+      const cache = sessionStorage.getItem("creations");
+      if (cache) {
+        setCreations(JSON.parse(cache));
+        setLoading(false);
+        return;
+      }
+       setLoading(true);
+
       const { data } = await axios.get('api/user/user-creations', {
         headers: {
           Authorization: `Bearer ${await getToken()}`,
@@ -27,6 +39,8 @@ export const Dashboard = () => {
 
       if (data.success) {
         setCreations(data.content);
+        // ✅ cache me store karo
+        sessionStorage.setItem("creations", JSON.stringify(data.content));
       } else {
         toast.error(data.message || 'Failed to fetch creations');
       }
@@ -38,13 +52,14 @@ export const Dashboard = () => {
     }
   };
 
+  // ✅ useEffect
   useEffect(() => {
     if (!user) {
       nav('/sign-in');
       return;
     }
     getDashboardData();
-  }, []);
+  }, [user]);
 
   return (
     <div
@@ -83,7 +98,9 @@ export const Dashboard = () => {
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 flex items-center justify-between hover:shadow-lg transition-shadow duration-300">
           <div>
             <p className="text-xs sm:text-sm text-gray-500">Total Creations</p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">{creations.length}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
+              {creations.length}
+            </h2>
           </div>
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-white flex items-center justify-center">
             <Sparkles className="w-5 sm:w-6" />

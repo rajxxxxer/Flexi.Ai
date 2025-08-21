@@ -14,7 +14,7 @@ const Hero = () => {
       openSignIn(); // Sign in modal open
       return;       // Sign-in hone ke baad navigate hoga
     }
-    navi('/ai');
+    navi('/ai/w-a');
   };
   const handledemo=()=>{
     if(!user){
