@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: flexi-backend
+    env: node
+    plan: free
+    rootDirectory: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_4uvXRSWCQFx2@ep-dawn-glitter-a8i2aarq-pooler.eastus2.azure.neon.tech/neondb?sslmode=require&channel_binding=require
+      - key: CLERK_PUBLISHABLE_KEY
+        value: pk_test_c21vb3RoLWdlbGRpbmctODMuY2xlcmsuYWNjb3VudHMuZGV2JA
+      - key: CLERK_SECRET_KEY
+        value: sk_test_6q5yJIwe4jLptsOWKozBqs7xtsVHPNNqp7rr4z4PDH
+      - key: GEMINI_API_KEY
+        value: AIzaSyDZZietw1T4ZzRT14fdugwJuWof_sGXbs0
+      - key: CLIP_DROP_API_KEY
+        value: 3f83fae18760f911b49c57726c731a7bf58d0287770d9b472ea495a0a3729fd864b54ea6c39aa3bdb6a588b8b29e82f5
+      - key: CLOUDINARY_CLOUD_NAME
+        value: dlnaifnwy
+      - key: CLOUDINARY_API_KEY
+        value: 829181816355184
+      - key: CLOUDINARY_API_SECRET
+        value: hvn8Khf5AZHVtM1Z92Y_mmqY5MY
