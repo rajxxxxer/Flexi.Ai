@@ -8,7 +8,7 @@ export const getuserCreation= async (req, res) => {
     const creations = await sql`
       SELECT * FROM creations WHERE user_id = ${userId} ORDER BY created_at DESC`;
 
-    return res.json({ success: true, creations });
+    return res.json({ success: true,content: creations });
   } catch (err) {
     console.error("Error fetching user creations:", err);
     return res.status(500).json({ error: "Internal Server Error" });

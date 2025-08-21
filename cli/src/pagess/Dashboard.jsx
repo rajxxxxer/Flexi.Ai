@@ -1,20 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { Gem, Sparkles } from 'lucide-react';
-import { dummyCreationData } from '@/assets/assets';
-import { Protect, useUser } from '@clerk/clerk-react';
+import { Protect, useAuth, useUser } from '@clerk/clerk-react';
 import CreationItem from '@/compon/CreationItem';
 import { useNavigate } from 'react-router-dom';
-import { useSidebar } from '@/context/SidebarContext'; // ✅ Context import
+import { useSidebar } from '@/context/SidebarContext';
+import axios from 'axios';
+
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 export const Dashboard = () => {
   const { user } = useUser();
   const nav = useNavigate();
-  const { sidebar } = useSidebar(); // ✅ Get sidebar state
-
+  const [loading, setLoading] = useState(false);
+  const { sidebar } = useSidebar();
+  const { getToken } = useAuth();
   const [creations, setCreations] = useState([]);
 
   const getDashboardData = async () => {
-    setCreations(dummyCreationData);
+    try {
+      setLoading(true);
+      const { data } = await axios.get('api/user/user-creations', {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
+
+      if (data.success) {
+        setCreations(data.content);
+      } else {
+        toast.error(data.message || 'Failed to fetch creations');
+      }
+    } catch (error) {
+      console.error("Fetch error", error);
+      toast.error('Something went wrong while fetching dashboard data');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -28,17 +49,24 @@ export const Dashboard = () => {
   return (
     <div
       className={`
-        h-full overflow-y-auto p-4 sm:p-6 bg-gray-50 transition-all duration-300
+        relative h-full overflow-y-auto p-4 sm:p-6 bg-gray-50 transition-all duration-300
         ${!sidebar ? 'max-sm:pl-16' : 'max-sm:pl-0'}
       `}
     >
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white bg-opacity-60">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
+
       <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6">
         Dashboard Overview
       </h1>
 
       {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        {/* Active Plan Card */}
+        {/* Active Plan */}
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 flex items-center justify-between hover:shadow-lg transition-shadow duration-300">
           <div className="flex-1">
             <p className="text-xs sm:text-sm text-gray-500">Active Plan</p>
@@ -51,7 +79,7 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        {/* Total Creations Card */}
+        {/* Total Creations */}
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 flex items-center justify-between hover:shadow-lg transition-shadow duration-300">
           <div>
             <p className="text-xs sm:text-sm text-gray-500">Total Creations</p>

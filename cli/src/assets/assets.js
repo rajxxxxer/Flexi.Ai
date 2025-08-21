@@ -20,7 +20,13 @@ export const assets = {
     profile_img_1,
     arrow_icon,
 };
-
+{/* "w-a" element={<Articles />} />
+          <Route path="bt" element={<Blogtitle />} />
+          <Route path="gen" element={<GenrateIm />} />
+          <Route path="rev" element={<Review />} />
+          <Route path="com" element={<Community />} />
+          <Route path="ro" element={<Removeobj />} />
+          <Route path="remback"*/}
 export const AiToolsData = [
     {
         title: 'AI Article Writer',
@@ -48,14 +54,14 @@ export const AiToolsData = [
         description: 'Effortlessly remove backgrounds from your images with our AI-driven tool.',
         Icon: Eraser,
         bg: { from: '#F76C1C', to: '#F04A3C' },
-        path: '/ai/br'
+        path: '/ai/remback'
     },
     {
         title: 'Object Removal',
         description: 'Remove unwanted objects from your images seamlessly with our AI object removal tool.',
         Icon: Scissors,
         bg: { from: '#5C6AF1', to: '#427DF5' },
-        path: '/ai/remove-object'
+        path: '/ai/ro'
     },
     {
         title: 'Resume Reviewer',
