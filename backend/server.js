@@ -19,7 +19,9 @@ app.use(express.json());
 
 // Public route
 
-
+app.get('/',()=>{
+  console.log('server is live')
+})
 
 // Protected routes
 app.use('/api/ai', requireAuth(),  airouter);
