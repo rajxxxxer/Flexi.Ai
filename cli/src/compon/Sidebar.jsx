@@ -16,7 +16,12 @@ import { NavLink } from 'react-router-dom';
 const Sidebar = ({ sidebar, setSidebar }) => {
   const { user } = useUser();
   const { signOut, openUserProfile } = useClerk();
-
+ const handleLogout = async () => {
+    // clear all creations cache on logout
+    sessionStorage.clear();
+    await signOut();
+    nav("/sign-in");
+  };
   const navItems = [
     { to: '/ai', label: 'Dashboard', Icon: House },
     { to: '/ai/w-a', label: 'Article-Generator', Icon: SquarePen },
@@ -104,7 +109,7 @@ const Sidebar = ({ sidebar, setSidebar }) => {
           </div>
         </div>
         <LogOut
-          onClick={signOut}
+          onClick={handleLogout}
           className="w-5 text-gray-400 hover:text-gray-700 transition cursor-pointer"
         />
       </div>

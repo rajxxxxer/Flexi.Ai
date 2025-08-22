@@ -20,16 +20,17 @@ export const Dashboard = () => {
   // ✅ function to fetch data
   const getDashboardData = async () => {
     try {
-     
+      if (!user) return;
 
-      // pehle cache check karo
-      const cache = sessionStorage.getItem("creations");
+      // pehle cache check karo (userId ke sath)
+      const cache = sessionStorage.getItem(`creations_${user.id}`);
       if (cache) {
         setCreations(JSON.parse(cache));
         setLoading(false);
         return;
       }
-       setLoading(true);
+
+      setLoading(true);
 
       const { data } = await axios.get('api/user/user-creations', {
         headers: {
@@ -39,8 +40,11 @@ export const Dashboard = () => {
 
       if (data.success) {
         setCreations(data.content);
-        // ✅ cache me store karo
-        sessionStorage.setItem("creations", JSON.stringify(data.content));
+        // ✅ cache me store karo user ke hisaab se
+        sessionStorage.setItem(
+          `creations_${user.id}`,
+          JSON.stringify(data.content)
+        );
       } else {
         toast.error(data.message || 'Failed to fetch creations');
       }
